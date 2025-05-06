@@ -6,8 +6,10 @@ from .serializers import ArticleSerializer, CommentSerializer
 # Create your views here.
 
 class ArticleListView(generics.ListCreateAPIView):
-    queryset = Article.objects.all().order_by('-created_at')
+    queryset = Article.objects.all().order_by('created_at')
     serializer_class = ArticleSerializer
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
 
 class CommentListView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer

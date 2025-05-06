@@ -15,7 +15,7 @@ class Article(models.Model):
 
     title = models.CharField(max_length=500)
     content = models.TextField()
-    author = models.CharField(max_length=100)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     category = models.CharField(
         max_length=20,
         choices=Category.choices,

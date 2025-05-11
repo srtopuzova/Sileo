@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from rest_framework import generics, status, views, filters
+from .permissions import IsAuthorOrReadOnly
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Article, Comment, Favorite
-from .serializers import ArticleSerializer, CommentSerializer, FavoriteSerializer
+from .serializers import ArticleSerializer, CommentSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
@@ -37,3 +38,8 @@ class FavoriteToggleView(views.APIView):
             favorite.delete()
             return Response({"detail": "Unfavorited"}, status=status.HTTP_200_OK)
         return Response({"detail": "Favorited"}, status=status.HTTP_201_CREATED)
+
+class ArticleDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerializer
+    permission_classes = [IsAuthorOrReadOnly]

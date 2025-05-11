@@ -14,5 +14,5 @@ ENV/
 
 .vscode/
 
-**/migrations/__pycache__/
-**/migrations/*.pyc
+*/migrations/*
+!*/migrations/__init__.py

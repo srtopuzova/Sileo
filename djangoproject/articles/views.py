@@ -1,19 +1,37 @@
-from rest_framework import generics, status, views, filters
+from django_filters import rest_framework as filters
+from django.utils.timezone import make_aware
+from rest_framework import generics, status, views
 from .permissions import IsAuthorOrReadOnly
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Article, Comment, Favorite
 from .serializers import ArticleSerializer, CommentSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter
 from django.shortcuts import get_object_or_404
+from datetime import datetime, time
 
 # Create your views here.
+
+class ArticleFilter(filters.FilterSet):
+    start_date = filters.DateFilter(field_name="updated_at", lookup_expr='gte', required=False, label='Updated after or on:')
+    end_date = filters.DateFilter(field_name="updated_at is less than or equal to", method='filter_end_date', required=False, label='Updated before or on:')
+    category = filters.ChoiceFilter(choices = Article.Category.choices, required=False, label='Category:')
+
+    class Meta:
+        model = Article
+        fields = ['start_date', 'end_date', 'category']
+    
+    def filter_end_date(self, queryset, name, value):
+        end_of_day = datetime.combine(value, time.max)
+        end_of_day = make_aware(end_of_day)
+        return queryset.filter(updated_at__lte=end_of_day)
 
 class ArticleListView(generics.ListCreateAPIView):
     queryset = Article.objects.all().order_by('-updated_at')
     serializer_class = ArticleSerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
-    filterset_fields = ['category']
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = ArticleFilter
     search_fields = ['title', 'content', 'user__username']
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

@@ -1,19 +1,28 @@
 from rest_framework import serializers
-from .models import Article, Comment
+from .models import Article, Comment, Favorite
 
 class ArticleSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(read_only=True)
-    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M", read_only = True)
-    updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M", read_only = True)
+    author = serializers.StringRelatedField()
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only = True)
+    updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only = True)
+    favorites_count = serializers.SerializerMethodField()
     class Meta:
         model = Article
         fields = '__all__'
-        read_only_fields = ['id', 'author', 'created_at', 'updated_at'] 
+        read_only_fields = ['id', 'author', 'created_at', 'updated_at', 'favorites_count'] 
+    def get_favorites_count(self, obj):
+        return obj.favorites.count()
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
-    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M", read_only = True)
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only = True)
     class Meta:
         model = Comment
         fields = '__all__'
         read_only_fields = ['id', 'article', 'user', 'created_at']
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        read_only_fields = '__all__'

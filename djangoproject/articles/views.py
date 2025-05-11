@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from rest_framework import generics, status, views, filters
+from rest_framework import generics, status, views, filters, permissions
 from .permissions import IsAuthorOrReadOnly
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -14,9 +13,9 @@ class ArticleListView(generics.ListCreateAPIView):
     serializer_class = ArticleSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['category']
-    search_fields = ['title', 'content', 'author__username']
+    search_fields = ['title', 'content', 'user__username']
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        serializer.save(user=self.request.user)
 
 class CommentListView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
@@ -42,4 +41,9 @@ class FavoriteToggleView(views.APIView):
 class ArticleDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleSerializer
+    permission_classes = [IsAuthorOrReadOnly]
+
+class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrReadOnly]

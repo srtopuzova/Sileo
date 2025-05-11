@@ -5,17 +5,17 @@ from django.conf import settings
 
 class Article(models.Model):
     class Category(models.TextChoices):
-        ETHICS = 'Ethics', 'Ethics'
-        LOGIC = 'Logic', 'Logic'
-        METAPHYSICS = 'Metaphysics', 'Metaphysics'
-        EPISTEMOLOGY = 'Epistemology', 'Epistemology'
-        AESTHETICS = 'Aesthetics', 'Aesthetics'
-        EXISTENTIALISM = 'Existentialism', 'Existentialism'
-        OTHER = 'Other', 'Other'
+        ETHICS = 'Ethics'
+        LOGIC = 'Logic'
+        METAPHYSICS = 'Metaphysics'
+        EPISTEMOLOGY = 'Epistemology'
+        AESTHETICS = 'Aesthetics'
+        EXISTENTIALISM = 'Existentialism'
+        OTHER = 'Other'
 
     title = models.CharField(max_length=500)
     content = models.TextField()
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     category = models.CharField(
         max_length=20,
         choices=Category.choices,

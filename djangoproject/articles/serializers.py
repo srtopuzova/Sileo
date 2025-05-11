@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Article, Comment, Favorite
 
 class ArticleSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField()
+    user = serializers.StringRelatedField()
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only = True)
     updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only = True)
     favorites_count = serializers.SerializerMethodField()
@@ -14,7 +14,7 @@ class ArticleSerializer(serializers.ModelSerializer):
         return obj.favorites.count()
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
+    user = serializers.StringRelatedField()
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only = True)
     class Meta:
         model = Comment

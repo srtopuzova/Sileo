@@ -1,15 +1,19 @@
 from django.shortcuts import render
-from rest_framework import generics, status, views
+from rest_framework import generics, status, views, filters
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Article, Comment, Favorite
 from .serializers import ArticleSerializer, CommentSerializer, FavoriteSerializer
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
 
 class ArticleListView(generics.ListCreateAPIView):
     queryset = Article.objects.all().order_by('-created_at')
     serializer_class = ArticleSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ['category']
+    search_fields = ['title', 'content', 'author__username']
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 

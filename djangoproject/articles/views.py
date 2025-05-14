@@ -4,7 +4,7 @@ from rest_framework import generics, status, views
 from .permissions import IsAuthorOrReadOnly
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import Article, Comment, Favorite
+from .models import Article, Comment, Favorite, CommentLike
 from .serializers import ArticleSerializer, CommentSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
@@ -66,3 +66,14 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrReadOnly]
+
+class CommentLikeToggleView(views.APIView) :
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, comment_id, article_id):
+        comment = get_object_or_404(Comment, pk=comment_id, article_id=article_id)
+        like, created = CommentLike.objects.get_or_create(user=request.user, comment=comment)
+        if not created:
+            like.delete()
+            return Response({"detail": "Unliked"}, status=status.HTTP_200_OK)
+        return Response({"detail": "Liked"}, status=status.HTTP_201_CREATED)

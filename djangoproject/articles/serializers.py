@@ -37,3 +37,16 @@ class CommentLikeSerializer(serializers.ModelSerializer):
         model = CommentLike
         fields = '__all__'
         read_only_fields = '__all__'
+
+class FavoriteArticleSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only = True)
+    updated_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only = True)
+    favorites_count = serializers.SerializerMethodField()
+    favorited_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only=True)
+    class Meta:
+        model = Article
+        fields = '__all__'
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'favorited_at', 'favorites_count']
+    def get_favorites_count(self, obj):
+        return obj.favorites.count()

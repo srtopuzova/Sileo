@@ -5,12 +5,12 @@ from .permissions import IsAuthorOrReadOnly
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Article, Comment, Favorite, CommentLike
-from .serializers import ArticleSerializer, CommentSerializer
+from .serializers import ArticleSerializer, CommentSerializer, FavoriteArticleSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.shortcuts import get_object_or_404
 from datetime import datetime, time
-from django.db.models import Count
+from django.db.models import Count, Max
 
 # Create your views here.
 
@@ -52,11 +52,13 @@ class FavoriteToggleView(views.APIView):
 
     def post(self, request, article_id):
         article = get_object_or_404(Article, pk=article_id)
-        favorite, created = Favorite.objects.get_or_create(user=request.user, article=article)
-        if not created:
+        try:
+            favorite = Favorite.objects.get(user=request.user, article=article)
             favorite.delete()
             return Response({"detail": "Unfavorited"}, status=status.HTTP_200_OK)
-        return Response({"detail": "Favorited"}, status=status.HTTP_201_CREATED)
+        except Favorite.DoesNotExist:
+            Favorite.objects.create(user=request.user, article=article)
+            return Response({"detail": "Favorited"}, status=status.HTTP_201_CREATED)
 
 class ArticleDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Article.objects.all()
@@ -86,12 +88,13 @@ class ArticleRankingView(generics.ListAPIView):
         return Article.objects.annotate(favorites_count=Count('favorites')).order_by('-favorites_count', '-updated_at')
 
 class FavoriteArticleListView(generics.ListAPIView):
-    serializer_class = ArticleSerializer
+    serializer_class = FavoriteArticleSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return (
             Article.objects
             .filter(favorites__user=self.request.user)
-            .order_by('-created_at')
+            .annotate(favorited_at=Max('favorites__created_at'))
+            .order_by('-favorited_at')
         )

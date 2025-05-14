@@ -26,18 +26,6 @@ class CommentSerializer(serializers.ModelSerializer):
         return obj.likes.count()
 
 
-class FavoriteSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Favorite
-        fields = '__all__'
-        read_only_fields = '__all__'
-
-class CommentLikeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CommentLike
-        fields = '__all__'
-        read_only_fields = '__all__'
-
 class FavoriteArticleSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", read_only = True)

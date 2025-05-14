@@ -10,6 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.shortcuts import get_object_or_404
 from datetime import datetime, time
+from django.db.models import Count
 
 # Create your views here.
 
@@ -77,3 +78,9 @@ class CommentLikeToggleView(views.APIView) :
             like.delete()
             return Response({"detail": "Unliked"}, status=status.HTTP_200_OK)
         return Response({"detail": "Liked"}, status=status.HTTP_201_CREATED)
+
+class ArticleRankingView(generics.ListAPIView):
+    serializer_class = ArticleSerializer
+
+    def get_queryset(self):
+        return Article.objects.annotate(favorites_count=Count('favorites')).order_by('-favorites_count', '-updated_at')

@@ -84,3 +84,14 @@ class ArticleRankingView(generics.ListAPIView):
 
     def get_queryset(self):
         return Article.objects.annotate(favorites_count=Count('favorites')).order_by('-favorites_count', '-updated_at')
+
+class FavoriteArticleListView(generics.ListAPIView):
+    serializer_class = ArticleSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return (
+            Article.objects
+            .filter(favorites__user=self.request.user)
+            .order_by('-created_at')
+        )

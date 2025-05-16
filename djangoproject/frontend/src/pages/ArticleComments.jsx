@@ -149,6 +149,7 @@ export default function ArticleComments() {
             ) : (
                 <>
                 <p>{comment.content}</p>
+                <p>Likes: {comment.likes_count}</p>
                 {username === comment.user && (
                     <>
                     <button onClick={() => handleEditClick(comment)}>Edit</button>

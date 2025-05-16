@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from '../api/axios'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 
 export default function ArticleDetail() {
   const { id } = useParams()
@@ -92,30 +92,35 @@ export default function ArticleDetail() {
             disabled={submittingEdit}
           />
           <br />
-          <button onClick={handleEditSubmit} disabled={submittingEdit}>
+          <button type="button" onClick={handleEditSubmit} disabled={submittingEdit}>
             {submittingEdit ? 'Saving...' : 'Save Changes'}
           </button>
-          <button onClick={() => setEditing(false)}>Cancel</button>
+          <button type="button" onClick={() => setEditing(false)}>Cancel</button>
         </>
       ) : (
         <>
           <h1>{article.title}</h1>
           <p>by {article.user}</p>
           <article>{article.content}</article>
+          <small>
+            {article.updated_at === article.created_at
+              ? `Posted: ${new Date(article.created_at).toLocaleString()}`
+              : `Edited: ${new Date(article.updated_at).toLocaleString()}`}
+          </small>
         </>
       )}
 
       {username === article.user && !editing && (
         <div style={{ marginTop: '1rem' }}>
-          <button onClick={() => setEditing(true)}>Edit Article</button>
-          <button onClick={handleDelete} style={{ marginLeft: '1rem' }}>Delete Article</button>
+          <button type="button" onClick={() => setEditing(true)}>Edit Article</button>
+          <button type="button" onClick={handleDelete} style={{ marginLeft: '1rem' }}>Delete Article</button>
         </div>
       )}
 
       <section style={{ marginTop: '2rem' }}>
-        <a href={`/articles/${id}/comments/`}>
-          <button>View Comments</button>
-        </a>
+        <Link to={`/articles/${id}/comments/`}>
+          <button type="button">View Comments</button>
+        </Link>
       </section>
     </div>
   )

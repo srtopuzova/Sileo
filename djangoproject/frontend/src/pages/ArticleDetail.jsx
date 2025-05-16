@@ -101,6 +101,7 @@ export default function ArticleDetail() {
         <>
           <h1>{article.title}</h1>
           <p>by {article.user}</p>
+          <p>Category: <strong>{article.category}</strong></p>
           <article>{article.content}</article>
           <small>
             {article.updated_at === article.created_at

@@ -1,12 +1,17 @@
 import { useState, useEffect } from 'react'
 import axios from '../api/axios'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 export default function ArticleDetail() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [article, setArticle] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [editTitle, setEditTitle] = useState('')
+  const [editContent, setEditContent] = useState('')
+  const [submittingEdit, setSubmittingEdit] = useState(false)
 
   const username = localStorage.getItem('username')
   const token = localStorage.getItem('token')
@@ -17,9 +22,11 @@ export default function ArticleDetail() {
       try {
         const articleRes = await axios.get(`/articles/${id}/`)
         setArticle(articleRes.data)
+        setEditTitle(articleRes.data.title)
+        setEditContent(articleRes.data.content)
         setError('')
       } catch (err) {
-        setError('Failed to load article or comments.')
+        setError('Failed to load article.')
       } finally {
         setLoading(false)
       }
@@ -27,6 +34,41 @@ export default function ArticleDetail() {
     fetchData()
   }, [id])
 
+  const handleDelete = async () => {
+    if (!window.confirm('Are you sure you want to delete this article?')) return
+
+    try {
+      await axios.delete(`/articles/${id}/`, {
+        headers: { Authorization: `Token ${token}` }
+      })
+      navigate('/')
+    } catch (err) {
+      setError('Failed to delete article.')
+    }
+  }
+
+  const handleEditSubmit = async () => {
+    if (!editTitle.trim() || !editContent.trim()) {
+      setError('Title and content cannot be empty.')
+      return
+    }
+
+    setSubmittingEdit(true)
+    try {
+      const res = await axios.put(
+        `/articles/${id}/`,
+        { title: editTitle, content: editContent },
+        { headers: { Authorization: `Token ${token}` } }
+      )
+      setArticle(res.data)
+      setEditing(false)
+      setError('')
+    } catch (err) {
+      setError('Failed to update article.')
+    } finally {
+      setSubmittingEdit(false)
+    }
+  }
 
   if (loading) return <p>Loading article...</p>
   if (error) return <p style={{ color: 'red' }}>{error}</p>
@@ -34,16 +76,47 @@ export default function ArticleDetail() {
 
   return (
     <div>
-      <h1>{article.title}</h1>
-      <p>by {article.user}</p>
-      <article>{article.content}</article>
+      {editing ? (
+        <>
+          <input
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            disabled={submittingEdit}
+            style={{ width: '100%', fontSize: '1.5rem', marginBottom: '0.5rem' }}
+          />
+          <textarea
+            value={editContent}
+            onChange={(e) => setEditContent(e.target.value)}
+            rows={10}
+            style={{ width: '100%' }}
+            disabled={submittingEdit}
+          />
+          <br />
+          <button onClick={handleEditSubmit} disabled={submittingEdit}>
+            {submittingEdit ? 'Saving...' : 'Save Changes'}
+          </button>
+          <button onClick={() => setEditing(false)}>Cancel</button>
+        </>
+      ) : (
+        <>
+          <h1>{article.title}</h1>
+          <p>by {article.user}</p>
+          <article>{article.content}</article>
+        </>
+      )}
+
+      {username === article.user && !editing && (
+        <div style={{ marginTop: '1rem' }}>
+          <button onClick={() => setEditing(true)}>Edit Article</button>
+          <button onClick={handleDelete} style={{ marginLeft: '1rem' }}>Delete Article</button>
+        </div>
+      )}
 
       <section style={{ marginTop: '2rem' }}>
         <a href={`/articles/${id}/comments/`}>
-        <button>View Comments</button>
+          <button>View Comments</button>
         </a>
       </section>
-
     </div>
   )
 }

@@ -4,6 +4,8 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Favorites from './pages/Favorites'
 import './App.css'
+import Navbar from './elements/Navbar'
+import Footer from './elements/Footer'
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token')
@@ -13,6 +15,7 @@ function PrivateRoute({ children }) {
 function App() {
   return (
     <Router>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
 
@@ -29,6 +32,7 @@ function App() {
         />
 
       </Routes>
+      <Footer />
     </Router>
   )
 }

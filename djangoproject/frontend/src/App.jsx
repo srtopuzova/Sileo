@@ -15,24 +15,25 @@ function PrivateRoute({ children }) {
 function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        <Route
-          path="/favorites"
-          element={
-            <PrivateRoute>
-              <Favorites />
-            </PrivateRoute>
-          }
-        />
-
-      </Routes>
-      <Footer />
+      <div className="app-container">
+        <Navbar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+              path="/favorites"
+              element={
+                <PrivateRoute>
+                  <Favorites />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </Router>
   )
 }

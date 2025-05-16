@@ -11,35 +11,22 @@ export default function Navbar() {
   }
 
   return (
-    <nav style={navStyle}>
-      <Link to="/">Home</Link>
-      <Link to="/favorites">Favorites</Link>
+    <nav>
+      <ul>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/favorites">Favorites</Link></li>
 
-      {isLoggedIn ? (
-        <button onClick={handleLogout} style={buttonStyle}>Logout</button>
-      ) : (
-        <>
-          <Link to="/register">Register</Link>
-          <Link to="/login">Login</Link>
-        </>
-      )}
+        {isLoggedIn ? (
+          <li>
+            <button onClick={handleLogout} className="logout-btn">Logout</button>
+          </li>
+        ) : (
+          <>
+            <li><Link to="/register">Register</Link></li>
+            <li><Link to="/login">Login</Link></li>
+          </>
+        )}
+      </ul>
     </nav>
   )
-}
-
-const navStyle = {
-  display: 'flex',
-  gap: '1rem',
-  padding: '1rem',
-  backgroundColor: '#f0f0f0'
-}
-
-const buttonStyle = {
-  background: 'none',
-  border: 'none',
-  color: 'blue',
-  cursor: 'pointer',
-  textDecoration: 'underline',
-  padding: 0,
-  fontSize: '1rem'
 }

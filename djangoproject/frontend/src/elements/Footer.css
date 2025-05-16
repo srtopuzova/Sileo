@@ -1,4 +1,4 @@
-footer {
+.footer {
   background-color: #f5f5f5;
   padding: 1rem;
   text-align: center;
@@ -8,4 +8,5 @@ footer {
   width: 100%;
   border-top: 1px solid #ddd;
   font-size: 0.9rem;
+  margin-top: 2rem;
 }

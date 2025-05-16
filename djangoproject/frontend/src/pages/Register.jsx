@@ -15,8 +15,10 @@ export default function Register() {
     try {
       const response = await axios.post('/register', { username, password })
       const token = response.data.token
+      const username = response.data.username
 
       localStorage.setItem('token', token)
+      localStorage.setItem('username', username)
       navigate('/')
     } catch (err) {
       setError('Register failed. Check your credentials.')

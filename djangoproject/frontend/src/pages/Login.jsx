@@ -15,8 +15,10 @@ export default function Login() {
     try {
       const response = await axios.post('/login', { username, password })
       const token = response.data.token
+      const username = response.data.username
 
       localStorage.setItem('token', token)
+      localStorage.setItem('username', username)
       navigate('/')
     } catch (err) {
       setError('Login failed. Check your credentials.')

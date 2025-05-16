@@ -15,6 +15,12 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+    
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        user = User.objects.get(username=request.data['username'])
+        token = Token.objects.get(user=user)
+        return Response({'token': token.key, 'username': user.username}, status=status.HTTP_201_CREATED)
 
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):

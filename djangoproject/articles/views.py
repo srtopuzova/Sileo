@@ -34,8 +34,12 @@ class ArticleListView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = ArticleFilter
     search_fields = ['title', 'content', 'user__username']
+
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+    
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 class CommentListView(generics.ListCreateAPIView):
     serializer_class = CommentSerializer
@@ -46,6 +50,9 @@ class CommentListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, article_id=self.kwargs['article_id'])
+    
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 class FavoriteToggleView(views.APIView):
     permission_classes = [IsAuthenticated]
@@ -65,10 +72,16 @@ class ArticleDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ArticleSerializer
     permission_classes = [IsAuthorOrReadOnly]
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
 class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrReadOnly]
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 class CommentLikeToggleView(views.APIView) :
     permission_classes = [IsAuthenticated]

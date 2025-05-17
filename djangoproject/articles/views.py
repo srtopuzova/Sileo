@@ -4,8 +4,8 @@ from rest_framework import generics, status, views
 from .permissions import IsAuthorOrReadOnly
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import Article, Comment, Favorite, CommentLike
-from .serializers import ArticleSerializer, CommentSerializer, FavoriteArticleSerializer
+from .models import Article, Comment, CommentLike, ArticleLike
+from .serializers import ArticleSerializer, CommentSerializer, LikedArticleSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from django.shortcuts import get_object_or_404
@@ -16,7 +16,7 @@ from django.db.models import Count, Max
 
 class ArticleFilter(filters.FilterSet):
     start_date = filters.DateFilter(field_name="updated_at", lookup_expr='gte', required=False, label='Updated after or on:')
-    end_date = filters.DateFilter(field_name="updated_at is less than or equal to", method='filter_end_date', required=False, label='Updated before or on:')
+    end_date = filters.DateFilter(field_name="updated_at", method='filter_end_date', required=False, label='Updated before or on:')
     category = filters.ChoiceFilter(choices = Article.Category.choices, required=False, label='Category:')
 
     class Meta:
@@ -54,18 +54,16 @@ class CommentListView(generics.ListCreateAPIView):
     def get_serializer_context(self):
         return {'request': self.request}
 
-class FavoriteToggleView(views.APIView):
+class ArticleLikeToggleView(views.APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, article_id):
         article = get_object_or_404(Article, pk=article_id)
-        try:
-            favorite = Favorite.objects.get(user=request.user, article=article)
-            favorite.delete()
-            return Response({"detail": "Unfavorited"}, status=status.HTTP_200_OK)
-        except Favorite.DoesNotExist:
-            Favorite.objects.create(user=request.user, article=article)
-            return Response({"detail": "Favorited"}, status=status.HTTP_201_CREATED)
+        like, created = ArticleLike.objects.get_or_create(user=request.user, article=article)
+        if not created:
+            like.delete()
+            return Response({"detail": "Unliked"}, status=status.HTTP_200_OK)
+        return Response({"detail": "Liked"}, status=status.HTTP_201_CREATED)
 
 class ArticleDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Article.objects.all()
@@ -98,16 +96,16 @@ class ArticleRankingView(generics.ListAPIView):
     serializer_class = ArticleSerializer
 
     def get_queryset(self):
-        return Article.objects.annotate(favorites_count=Count('favorites')).order_by('-favorites_count', '-updated_at')
+        return Article.objects.annotate(likes_count=Count('likes')).order_by('-likes_count', '-updated_at')
 
-class FavoriteArticleListView(generics.ListAPIView):
-    serializer_class = FavoriteArticleSerializer
+class LikedArticleListView(generics.ListAPIView):
+    serializer_class = LikedArticleSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return (
             Article.objects
-            .filter(favorites__user=self.request.user)
-            .annotate(favorited_at=Max('favorites__created_at'))
-            .order_by('-favorited_at')
+            .filter(likes__user=self.request.user)
+            .annotate(liked_at=Max('likes__created_at'))
+            .order_by('-liked_at')
         )

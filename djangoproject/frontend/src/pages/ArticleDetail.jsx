@@ -12,6 +12,7 @@ export default function ArticleDetail() {
   const [editTitle, setEditTitle] = useState('')
   const [editContent, setEditContent] = useState('')
   const [submittingEdit, setSubmittingEdit] = useState(false)
+  const [favToggling, setFavToggling] = useState(false)
 
   const username = localStorage.getItem('username')
   const token = localStorage.getItem('token')
@@ -33,6 +34,25 @@ export default function ArticleDetail() {
     }
     fetchData()
   }, [id])
+
+  const toggleFavorite = async () => {
+    if (!token) return
+    setFavToggling(true)
+    try {
+      await axios.post(`/articles/${id}/favorite/`, null, {
+        headers: { Authorization: `Token ${token}` },
+      })
+      setArticle(prev => ({
+        ...prev,
+        is_favorited: !prev.is_favorited,
+        favorites_count: prev.is_favorited ? prev.favorites_count - 1 : prev.favorites_count + 1,
+      }))
+    } catch (err) {
+      console.error('Failed to toggle favorite')
+    } finally {
+      setFavToggling(false)
+    }
+  }
 
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this article?')) return
@@ -103,6 +123,12 @@ export default function ArticleDetail() {
           <p>by {article.user}</p>
           <p>Category: <strong>{article.category}</strong></p>
           <article>{article.content}</article>
+          <p>
+            Likes: {article.favorites_count}{' '}
+            <button onClick={toggleFavorite} disabled={favToggling} style={{ border: 'none', background: 'none' }}>
+              {article.is_favorited ? '❤️' : '🤍'}
+            </button>
+          </p>
           <small>
             {article.updated_at === article.created_at
               ? `Posted: ${new Date(article.created_at).toLocaleString()}`

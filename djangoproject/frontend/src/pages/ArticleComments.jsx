@@ -13,6 +13,7 @@ export default function ArticleComments() {
   const [editingCommentId, setEditingCommentId] = useState(null)
   const [editedContent, setEditedContent] = useState('')
   const [editSubmitting, setEditSubmitting] = useState(false)
+  const [likeTogglingIds, setLikeTogglingIds] = useState([])
 
   const username = localStorage.getItem('username')
   const token = localStorage.getItem('token')
@@ -32,6 +33,31 @@ export default function ArticleComments() {
     }
     fetchComments()
   }, [id])
+
+  const toggleCommentLike = async (commentId) => {
+    if (!token) return
+    setLikeTogglingIds(prev => [...prev, commentId])
+    try {
+      await axios.post(`/articles/${id}/comments/${commentId}/like/`, null, {
+        headers: { Authorization: `Token ${token}` }
+      })
+      setComments(prev =>
+        prev.map(c =>
+          c.id === commentId
+            ? {
+                ...c,
+                is_liked: !c.is_liked,
+                likes_count: c.is_liked ? c.likes_count - 1 : c.likes_count + 1
+              }
+            : c
+        )
+      )
+    } catch (err) {
+      console.error('Failed to toggle comment like')
+    } finally {
+      setLikeTogglingIds(prev => prev.filter(cid => cid !== commentId))
+    }
+  }
 
   const handleEditClick = (comment) => {
     setEditingCommentId(comment.id)
@@ -149,7 +175,16 @@ export default function ArticleComments() {
             ) : (
                 <>
                 <p>{comment.content}</p>
-                <p>Likes: {comment.likes_count}</p>
+                <p>
+                  Likes: {comment.likes_count}{' '}
+                  <button
+                    onClick={() => toggleCommentLike(comment.id)}
+                    disabled={likeTogglingIds.includes(comment.id)}
+                    style={{ border: 'none', background: 'none' }}
+                  >
+                    {comment.is_liked ? '❤️' : '🤍'}
+                  </button>
+                </p>
                 {username === comment.user && (
                     <>
                     <button onClick={() => handleEditClick(comment)}>Edit</button>

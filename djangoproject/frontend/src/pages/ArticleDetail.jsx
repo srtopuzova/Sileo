@@ -12,7 +12,7 @@ export default function ArticleDetail() {
   const [editTitle, setEditTitle] = useState('')
   const [editContent, setEditContent] = useState('')
   const [submittingEdit, setSubmittingEdit] = useState(false)
-  const [favToggling, setFavToggling] = useState(false)
+  const [likeToggling, setLikeToggling] = useState(false)
 
   const username = localStorage.getItem('username')
   const token = localStorage.getItem('token')
@@ -35,22 +35,22 @@ export default function ArticleDetail() {
     fetchData()
   }, [id])
 
-  const toggleFavorite = async () => {
+  const toggleArticleLike = async () => {
     if (!token) return
-    setFavToggling(true)
+    setLikeToggling(true)
     try {
-      await axios.post(`/articles/${id}/favorite/`, null, {
+      await axios.post(`/articles/${id}/like/`, null, {
         headers: { Authorization: `Token ${token}` },
       })
       setArticle(prev => ({
         ...prev,
-        is_favorited: !prev.is_favorited,
-        favorites_count: prev.is_favorited ? prev.favorites_count - 1 : prev.favorites_count + 1,
+        is_liked: !prev.is_liked,
+        likes_count: prev.is_liked ? prev.likes_count - 1 : prev.likes_count + 1,
       }))
     } catch (err) {
-      console.error('Failed to toggle favorite')
+      console.error('Failed to toggle like')
     } finally {
-      setFavToggling(false)
+      setLikeToggling(false)
     }
   }
 
@@ -124,9 +124,9 @@ export default function ArticleDetail() {
           <p>Category: <strong>{article.category}</strong></p>
           <article>{article.content}</article>
           <p>
-            Likes: {article.favorites_count}{' '}
-            <button onClick={toggleFavorite} disabled={favToggling} style={{ border: 'none', background: 'none' }}>
-              {article.is_favorited ? '❤️' : '🤍'}
+            Likes: {article.likes_count}{' '}
+            <button onClick={toggleArticleLike} disabled={likeToggling} style={{ border: 'none', background: 'none' }}>
+              {article.is_liked ? '❤️' : '🤍'}
             </button>
           </p>
           <small>

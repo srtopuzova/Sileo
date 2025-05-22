@@ -105,7 +105,7 @@ export default function Home() {
               {article.title}
             </Link>
             <p>by {article.author}</p>
-            <p>{article.excerpt || article.content.slice(0, 100) + '...'}</p>
+            <p>{article.content.slice(0, 100) + '...'}</p>
           </li>
         ))}
       </ul>

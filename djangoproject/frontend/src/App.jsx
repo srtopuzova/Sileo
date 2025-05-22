@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import Favorites from './pages/Favorites'
+import Liked from './pages/Liked'
 import './App.css'
 import Navbar from './elements/Navbar'
 import Footer from './elements/Footer'
@@ -23,10 +23,10 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
-              path="/favorites"
+              path="/liked"
               element={
                 <PrivateRoute>
-                  <Favorites />
+                  <Liked />
                 </PrivateRoute>
               }
             />

@@ -6,6 +6,7 @@ import Liked from './pages/Liked'
 import './App.css'
 import Navbar from './elements/Navbar'
 import Footer from './elements/Footer'
+import NotFound from './pages/NotFound'
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token')
@@ -30,6 +31,7 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />

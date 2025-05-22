@@ -1,11 +1,22 @@
 import { Link, useNavigate } from 'react-router-dom'
+import axios from '../api/axios'
 import './Navbar.css'
 
 export default function Navbar() {
   const navigate = useNavigate()
-  const isLoggedIn = !!localStorage.getItem('token')
+  const token = localStorage.getItem('token')
+  const isLoggedIn = !!token
 
-  function handleLogout() {
+  async function handleLogout() {
+    try {
+      await axios.post('/users/logout/', null, {
+        headers: {
+          Authorization: `Token ${token}`
+        }
+      })
+    } catch (err) {
+      console.error('Logout failed:', err)
+    }
     localStorage.removeItem('token')
     navigate('/')
   }

@@ -16,3 +16,10 @@ ENV/
 
 */migrations/*
 !*/migrations/__init__.py
+
+node_modules/
+frontend/node_modules/
+frontend/dist/
+dist/
+
+Thumbs.db

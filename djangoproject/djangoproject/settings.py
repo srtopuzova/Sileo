@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-y+djr9pocnrt7t%0*9*c2(p$vu)oxgy#p3+i+nrtxb$%76^zlv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['sileo-backend.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['sileo-backend.onrender.com', 'localhost', '127.0.0.1', 'sileo.herokuapp.com']
 
 
 # Application definition

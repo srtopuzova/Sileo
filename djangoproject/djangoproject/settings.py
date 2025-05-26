@@ -70,6 +70,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
+CORS_ALLOw_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
     'https://sileo-six.vercel.app',
     'https://sileo-srtopuzovas-projects.vercel.app',

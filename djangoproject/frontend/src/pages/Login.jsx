@@ -13,7 +13,7 @@ export default function Login() {
     setError('')
 
     try {
-      const response = await axios.post('/users/login/', { username, password })
+      const response = await axios.post('/users/login', { username, password })
       const token = response.data.token
       const username = response.data.username
 

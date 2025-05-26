@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'articles',
-    'users'
+    'users',
+    'corsheaders'
 ]
 
 REST_FRAMEWORK= {
@@ -58,6 +59,7 @@ REST_FRAMEWORK= {
 }
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -65,7 +67,14 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'https://sileo-ewrw4wi9s-srtopuzovas-projects.vercel.app',
+    'https://sileo-git-main-srtopuzovas-projects.vercel.app',
+    'https://sileo-khaki.vercel.app',
+    'https://sileo-srtopuzovas-projects.vercel.app'
 ]
 
 ROOT_URLCONF = 'djangoproject.urls'

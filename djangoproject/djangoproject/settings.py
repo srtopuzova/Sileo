@@ -76,6 +76,11 @@ CORS_ALLOWED_ORIGINS = [
     'https://sileo-six.vercel.app',
 ]
 
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type"
+]
+
 ROOT_URLCONF = 'djangoproject.urls'
 
 TEMPLATES = [

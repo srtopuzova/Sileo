@@ -73,7 +73,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'https://sileo-six.vercel.app',
     'https://sileo-srtopuzovas-projects.vercel.app',
-    'https://sileo-git-main-srtopuzovas-projects.vercel.app'
+    'https://sileo-git-main-srtopuzovas-projects.vercel.app',
+    'https://sileo-7wfjrmbfp-srtopuzovas-projects.vercel.app'
 ]
 
 ROOT_URLCONF = 'djangoproject.urls'

@@ -111,7 +111,7 @@ DATABASES = {
         'NAME': 'sileo-db',
         'USER': 'sileo_user',
         'PASSWORD': 'HPmi1kCV8FgCgKZJmeNl6nGudMZnmR5q',
-        'HOST': 'dpg-d0qpbdje5dus739pciog-a',
+        'HOST': 'dpg-d0qpbdje5dus739pciog-a.render-postgres.render.com',
         'PORT': '5432',
     }
 }

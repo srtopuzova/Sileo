@@ -107,8 +107,12 @@ WSGI_APPLICATION = 'djangoproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'sileo-db',
+        'USER': 'sileo_user',
+        'PASSWORD': 'HPmi1kCV8FgCgKZJmeNl6nGudMZnmR5q',
+        'HOST': 'dpg-d0qpbdje5dus739pciog-a',
+        'PORT': '5432',
     }
 }
 

@@ -108,10 +108,10 @@ WSGI_APPLICATION = 'djangoproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sileo-db',
+        'NAME': 'sileo_db_c44d',
         'USER': 'sileo_user',
         'PASSWORD': 'HPmi1kCV8FgCgKZJmeNl6nGudMZnmR5q',
-        'HOST': 'dpg-d0qpbdje5dus739pciog-a.render-postgres.render.com',
+        'HOST': 'dpg-d0qpbdje5dus739pciog-a.oregon-postgres.render.com',
         'PORT': '5432',
     }
 }

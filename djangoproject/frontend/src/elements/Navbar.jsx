@@ -25,12 +25,13 @@ export default function Navbar() {
     <nav>
       <ul>
         <li><Link to="/">Home</Link></li>
-        <li><Link to="/favorites">Favorites</Link></li>
 
         {isLoggedIn ? (
-          <li>
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
-          </li>
+          <>
+            <li><Link to="/favorites">Favorites</Link></li><li>
+              <button onClick={handleLogout} className="logout-btn">Logout</button>
+            </li>
+          </>
         ) : (
           <>
             <li><Link to="/register">Register</Link></li>

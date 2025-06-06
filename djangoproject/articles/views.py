@@ -11,6 +11,13 @@ from rest_framework.filters import SearchFilter
 from django.shortcuts import get_object_or_404
 from datetime import datetime, time
 from django.db.models import Count, Max
+#adding this so i can populate the db when i deploy
+from django.http import HttpResponse
+from django.core.management import call_command
+
+def migrate_view(request):
+    call_command('migrate')
+    return HttpResponse("✅ Migrations done.")
 
 # Create your views here.
 

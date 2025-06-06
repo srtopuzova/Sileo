@@ -10,12 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
+import dj_databse_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-import os
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -107,14 +107,13 @@ WSGI_APPLICATION = 'djangoproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sileo_db_c44d',
-        'USER': 'sileo_user',
-        'PASSWORD': 'HPmi1kCV8FgCgKZJmeNl6nGudMZnmR5q',
-        'HOST': 'dpg-d0qpbdje5dus739pciog-a.oregon-postgres.render.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+if os.environ.get("DATABASE_URL"):
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 
 # Password validation

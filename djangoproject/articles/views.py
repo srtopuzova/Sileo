@@ -17,7 +17,7 @@ from django.core.management import call_command
 
 def migrate_view(request):
     call_command('migrate')
-    return HttpResponse("✅ Migrations done.")
+    return HttpResponse("Migrations done.")
 
 # Create your views here.
 
